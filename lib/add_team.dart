@@ -13,7 +13,7 @@ class _AddTeamPageState extends State<AddTeamPage> {
       TextEditingController(text: "My Pokémon Team");
 
   final TextEditingController _searchCtrl = TextEditingController();
-  String _query = ""; // เก็บคำค้นหา (ตัวพิมพ์เล็ก)
+  String _query = ""; 
 
   final Set<int> _selected = <int>{};
 
@@ -39,25 +39,25 @@ class _AddTeamPageState extends State<AddTeamPage> {
     {'name': 'Rattata',    'image': 'https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/019.png'},
     {'name': 'Raticate',   'image': 'https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/020.png'},
     {'name': 'Spearow',    'image': 'https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/021.png'},
-  {'name': 'Fearow',     'image': 'https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/022.png'},
-  {'name': 'Ekans',      'image': 'https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/023.png'},
-  {'name': 'Arbok',      'image': 'https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/024.png'},
-  {'name': 'Pikachu',    'image': 'https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/025.png'},
-  {'name': 'Raichu',     'image': 'https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/026.png'},
-  {'name': 'Sandshrew',  'image': 'https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/027.png'},
-  {'name': 'Sandslash',  'image': 'https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/028.png'},
-  {'name': 'Nidoran♀',   'image': 'https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/029.png'},
-  {'name': 'Nidorina',   'image': 'https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/030.png'},
-  {'name': 'Nidoqueen',  'image': 'https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/031.png'},
-  {'name': 'Nidoran♂',   'image': 'https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/032.png'},
-  {'name': 'Nidorino',   'image': 'https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/033.png'},
-  {'name': 'Nidoking',   'image': 'https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/034.png'},
-  {'name': 'Clefairy',   'image': 'https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/035.png'},
-  {'name': 'Clefable',   'image': 'https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/036.png'},
-  {'name': 'Vulpix',     'image': 'https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/037.png'},
-  {'name': 'Ninetales',  'image': 'https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/038.png'},
-  {'name': 'Jigglypuff', 'image': 'https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/039.png'},
-  {'name': 'Wigglytuff', 'image': 'https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/040.png'},
+    {'name': 'Fearow',     'image': 'https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/022.png'},
+    {'name': 'Ekans',      'image': 'https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/023.png'},
+    {'name': 'Arbok',      'image': 'https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/024.png'},
+    {'name': 'Pikachu',    'image': 'https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/025.png'},
+    {'name': 'Raichu',     'image': 'https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/026.png'},
+    {'name': 'Sandshrew',  'image': 'https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/027.png'},
+    {'name': 'Sandslash',  'image': 'https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/028.png'},
+    {'name': 'Nidoran♀',   'image': 'https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/029.png'},
+    {'name': 'Nidorina',   'image': 'https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/030.png'},
+    {'name': 'Nidoqueen',  'image': 'https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/031.png'},
+    {'name': 'Nidoran♂',   'image': 'https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/032.png'},
+    {'name': 'Nidorino',   'image': 'https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/033.png'},
+    {'name': 'Nidoking',   'image': 'https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/034.png'},
+    {'name': 'Clefairy',   'image': 'https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/035.png'},
+    {'name': 'Clefable',   'image': 'https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/036.png'},
+    {'name': 'Vulpix',     'image': 'https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/037.png'},
+    {'name': 'Ninetales',  'image': 'https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/038.png'},
+    {'name': 'Jigglypuff', 'image': 'https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/039.png'},
+    {'name': 'Wigglytuff', 'image': 'https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/040.png'},
   ];
 
   @override
@@ -83,7 +83,7 @@ class _AddTeamPageState extends State<AddTeamPage> {
           _selected.add(index);
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('เลือกได้สูงสุด 3 ตัว')),
+            const SnackBar(content: Text('ต้องมีสมาชิก 3 ตัวเท่านั้น')),
           );
         }
       }
@@ -125,12 +125,12 @@ class _AddTeamPageState extends State<AddTeamPage> {
                     duration: Duration(seconds: 2),
                   ),
                 );
-                return; // ไม่ปิด Dialog
+                return; 
               }
               final chosen = _selected.map((i) => players[i]).toList();
               widget.saveTeam(chosen, teamName);
-              Navigator.of(context).pop(); // ปิด dialog
-              Navigator.of(context).pop(); // กลับหน้า Team Page
+              Navigator.of(context).pop(); 
+              Navigator.of(context).pop();
             },
             icon: const Icon(Icons.save),
             label: const Text("Save"),
@@ -142,7 +142,6 @@ class _AddTeamPageState extends State<AddTeamPage> {
 
   @override
   Widget build(BuildContext context) {
-    // map index หลังกรอง เพื่อให้ selection ยังอิง index จริงของ players
     final List<int> visibleIndices = List<int>.generate(players.length, (i) => i)
         .where((i) => _query.isEmpty
             ? true
@@ -168,7 +167,7 @@ class _AddTeamPageState extends State<AddTeamPage> {
         padding: const EdgeInsets.all(10),
         child: Column(
           children: [
-            // กล่องสรุป (โชว์เมื่อเลือกอย่างน้อย 1 ตัว)
+            // โปเกมอนที่เลือกแล้ว
             if (_selected.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(bottom: 10),
@@ -190,7 +189,6 @@ class _AddTeamPageState extends State<AddTeamPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // หัวมุมจาง
                       Text(
                         "ทีม : ${_selected.length}/3",
                         style: TextStyle(
@@ -200,7 +198,6 @@ class _AddTeamPageState extends State<AddTeamPage> {
                         ),
                       ),
                       const SizedBox(height: 6),
-                      // รูปที่เลือก (จัดกึ่งกลาง)
                       Center(
                         child: Wrap(
                           spacing: 8,
@@ -260,7 +257,7 @@ class _AddTeamPageState extends State<AddTeamPage> {
 
             const SizedBox(height: 8),
 
-            // หัวข้อเลือกโปเกมอน
+            // ป้ายเลือกโปเกมอน
             Align(
               alignment: Alignment.centerLeft,
               child: Row(
@@ -282,7 +279,7 @@ class _AddTeamPageState extends State<AddTeamPage> {
             ),
             const SizedBox(height: 8),
 
-            // กริดรายชื่อ (หลังกรอง)
+            // รายชื่อหลังกรอง
             Expanded(
               child: LayoutBuilder(
                 builder: (context, c) {
@@ -309,7 +306,7 @@ class _AddTeamPageState extends State<AddTeamPage> {
                     ),
                     itemCount: visibleIndices.length,
                     itemBuilder: (_, visIdx) {
-                      final index = visibleIndices[visIdx]; // index จริงใน players
+                      final index = visibleIndices[visIdx]; 
                       final name = players[index]['name']!;
                       final img = players[index]['image']!;
                       final isSelected = _selected.contains(index);

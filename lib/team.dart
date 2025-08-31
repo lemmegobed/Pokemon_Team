@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
-import 'add_team.dart'; // นำเข้าหน้า add_team.dart
+import 'add_team.dart'; 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -56,43 +56,32 @@ class _TeamPageState extends State<TeamPage> {
     if (stored == null || (stored is List && stored.isEmpty)) {
       final defaultTeams = [
         {
-          "name": "team a",
+          "name": "team A",
           "members": [
             {
               "name": "Bulbasaur",
-              "image":
-                  "https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/001.png"
+              "image":"https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/001.png"
             },
             {
               "name": "Charmander",
-              "image":
-                  "https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/004.png"
-            },
+              "image":"https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/004.png"},
             {
               "name": "Squirtle",
-              "image":
-                  "https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/007.png"
-            },
+              "image":"https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/007.png"},
           ],
         },
         {
-          "name": "team b",
+          "name": "team B",
           "members": [
             {
               "name": "Caterpie",
-              "image":
-                  "https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/010.png"
-            },
+              "image":"https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/010.png"},
             {
               "name": "Metapod",
-              "image":
-                  "https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/011.png"
-            },
+              "image":"https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/011.png"},
             {
               "name": "Butterfree",
-              "image":
-                  "https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/012.png"
-            },
+              "image":"https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/012.png"},
           ],
         },
       ];
