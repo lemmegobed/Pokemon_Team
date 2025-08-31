@@ -19,7 +19,7 @@ class TeamApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         useMaterial3: true,
       ),
-      home: const TeamPage(), // หน้าเริ่มต้น
+      home: const TeamPage(),
     );
   }
 }
@@ -34,15 +34,27 @@ class TeamPage extends StatefulWidget {
 class _TeamPageState extends State<TeamPage> {
   final GetStorage _storage = GetStorage();
   List<Map<String, dynamic>> _teams = [];
+  List<Map<String, dynamic>> _filteredTeams = [];
+  final TextEditingController _searchCtrl = TextEditingController();
+  String _query = "";
 
   @override
   void initState() {
     super.initState();
     _loadTeams();
+
+    _searchCtrl.addListener(() {
+      setState(() {
+        _query = _searchCtrl.text.trim().toLowerCase();
+        _filterTeams();
+      });
+    });
   }
 
-  // ---------- SEED: team ตัวอย่าง 2 ทีม ----------
-  List<Map<String, dynamic>> get _defaultTeams => [
+  void _seedIfEmpty() {
+    final stored = _storage.read('teams');
+    if (stored == null || (stored is List && stored.isEmpty)) {
+      final defaultTeams = [
         {
           "name": "team a",
           "members": [
@@ -84,35 +96,45 @@ class _TeamPageState extends State<TeamPage> {
           ],
         },
       ];
-
-  void _seedIfEmpty() {
-    final stored = _storage.read('teams');
-    if (stored == null || (stored is List && stored.isEmpty)) {
-      _storage.write('teams', _defaultTeams);
+      _storage.write('teams', defaultTeams);
     }
   }
-  // ------------------------------------------------
 
   void _loadTeams() {
     _seedIfEmpty();
     final stored = _storage.read('teams');
     if (stored is List) {
-      _teams =
-          stored.map<Map<String, dynamic>>((e) => Map<String, dynamic>.from(e)).toList();
+      _teams = stored
+          .map<Map<String, dynamic>>(
+              (e) => Map<String, dynamic>.from(e))
+          .toList();
+      _filterTeams();
       setState(() {});
+    }
+  }
+
+  void _filterTeams() {
+    if (_query.isEmpty) {
+      _filteredTeams = List.from(_teams);
+    } else {
+      _filteredTeams = _teams
+          .where((team) =>
+              (team["name"] ?? "").toString().toLowerCase().contains(_query))
+          .toList();
     }
   }
 
   void _persist() => _storage.write("teams", _teams);
 
-  // เพิ่มทีมใหม่
   void _saveTeam(List<Map<String, String>> members, String teamName) {
     final newTeam = {"name": teamName, "members": members};
-    setState(() => _teams.add(newTeam));
+    setState(() {
+      _teams.add(newTeam);
+      _filterTeams();
+    });
     _persist();
   }
 
-  // ปุ่มกลมเล็กพร้อมพื้นหลัง
   Widget _smallRoundIconButton({
     required BuildContext context,
     required IconData icon,
@@ -128,7 +150,7 @@ class _TeamPageState extends State<TeamPage> {
         customBorder: const CircleBorder(),
         onTap: onTap,
         child: Padding(
-          padding: const EdgeInsets.all(6), // ยิ่งน้อยยิ่งเล็ก
+          padding: const EdgeInsets.all(6),
           child: Icon(icon, size: 16, color: fg),
         ),
       ),
@@ -136,9 +158,9 @@ class _TeamPageState extends State<TeamPage> {
     return tooltip == null ? btn : Tooltip(message: tooltip, child: btn);
   }
 
-  // ======= ฟังก์ชันแก้ไข/ลบ =======
   Future<void> _renameTeam(int index) async {
-    final controller = TextEditingController(text: _teams[index]["name"]?.toString() ?? "");
+    final controller = TextEditingController(
+        text: _teams[index]["name"]?.toString() ?? "");
     final ok = await showDialog<bool>(
       context: context,
       builder: (_) => AlertDialog(
@@ -167,6 +189,7 @@ class _TeamPageState extends State<TeamPage> {
       final newName = controller.text.trim();
       if (newName.isNotEmpty) {
         setState(() => _teams[index]["name"] = newName);
+        _filterTeams();
         _persist();
       }
     }
@@ -191,18 +214,25 @@ class _TeamPageState extends State<TeamPage> {
     );
 
     if (ok == true) {
-      setState(() => _teams.removeAt(index));
+      setState(() {
+        _teams.removeAt(index);
+        _filterTeams();
+      });
       _persist();
     }
   }
-  // =================================
+
+  @override
+  void dispose() {
+    _searchCtrl.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    final empty = _teams.isEmpty;
+    final empty = _filteredTeams.isEmpty;
 
     return Scaffold(
-
       appBar: AppBar(
         backgroundColor: Colors.blue,
         elevation: 4,
@@ -215,22 +245,57 @@ class _TeamPageState extends State<TeamPage> {
           ),
         ),
         centerTitle: true,
+        bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(48),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            child: TextField(
+              controller: _searchCtrl,
+              style: const TextStyle(fontSize: 14),
+              decoration: InputDecoration(
+                hintText: "ค้นหาทีม...",
+                hintStyle: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                prefixIcon: const Icon(Icons.search, size: 16),
+                suffixIcon: _query.isNotEmpty
+                    ? IconButton(
+                        tooltip: "ล้างคำค้น",
+                        icon: const Icon(Icons.clear, size: 16),
+                        onPressed: () {
+                          _searchCtrl.clear();
+                        },
+                      )
+                    : null,
+                isDense: true,
+                contentPadding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                filled: true,
+                fillColor: Colors.white,
+              ),
+            ),
+          ),
+        ),
       ),
       body: empty
           ? Center(
               child: Text(
-                "ยังไม่มีทีมที่บันทึก\nกดปุ่ม + เพื่อสร้างทีมใหม่",
+                _query.isEmpty
+                    ? "ยังไม่มีทีมที่บันทึก\nกดปุ่ม + เพื่อสร้างทีมใหม่"
+                    : "ไม่พบทีมที่ค้นหา",
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
             )
           : ListView.separated(
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
-              itemCount: _teams.length,
+              itemCount: _filteredTeams.length,
               separatorBuilder: (_, __) => const SizedBox(height: 12),
               itemBuilder: (context, index) {
-                final team = _teams[index];
-                final String name = (team["name"] ?? "Unnamed Team").toString();
+                final team = _filteredTeams[index];
+                final String name =
+                    (team["name"] ?? "Unnamed Team").toString();
                 final List membersRaw = (team["members"] ?? []) as List;
                 final List<Map<String, dynamic>> members =
                     membersRaw.map((m) => Map<String, dynamic>.from(m)).toList();
@@ -267,8 +332,8 @@ class _TeamPageState extends State<TeamPage> {
                               context: context,
                               icon: Icons.edit_outlined,
                               onTap: () => _renameTeam(index),
-                              bg: const Color.fromARGB(255, 179, 229, 252), // ฟ้าอ่อน
-                              fg: const Color.fromARGB(255, 1, 87, 155),    // ฟ้าเข้มสำหรับไอคอน
+                              bg: const Color.fromARGB(255, 179, 229, 252),
+                              fg: const Color.fromARGB(255, 1, 87, 155),
                               tooltip: 'แก้ไขชื่อทีม',
                             ),
                             const SizedBox(width: 6),
@@ -283,8 +348,6 @@ class _TeamPageState extends State<TeamPage> {
                           ],
                         ),
                         const SizedBox(height: 5),
-
-                        // รูป + ชื่อตัวละคร
                         Wrap(
                           spacing: 10,
                           runSpacing: 12,
@@ -299,8 +362,8 @@ class _TeamPageState extends State<TeamPage> {
                                   ClipOval(
                                     child: Image.network(
                                       img,
-                                      width: 48,  
-                                      height: 48, 
+                                      width: 48,
+                                      height: 48,
                                       fit: BoxFit.cover,
                                     ),
                                   ),
@@ -310,10 +373,13 @@ class _TeamPageState extends State<TeamPage> {
                                     textAlign: TextAlign.center,
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
-                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall
+                                        ?.copyWith(
                                           fontWeight: FontWeight.w300,
-                                          fontSize: 10,               
-                                          color: Colors.blueGrey[700], 
+                                          fontSize: 10,
+                                          color: Colors.blueGrey[700],
                                         ),
                                   ),
                                 ],
@@ -321,7 +387,6 @@ class _TeamPageState extends State<TeamPage> {
                             );
                           }).toList(),
                         ),
-
                       ],
                     ),
                   ),
@@ -329,37 +394,37 @@ class _TeamPageState extends State<TeamPage> {
               },
             ),
       floatingActionButton: FloatingActionButton.extended(
-  onPressed: () async {
-    await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => AddTeamPage(saveTeam: _saveTeam),
+        onPressed: () async {
+          await Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => AddTeamPage(saveTeam: _saveTeam),
+            ),
+          );
+          _loadTeams();
+        },
+        icon: const Icon(
+          Icons.add,
+          size: 20,
+          color: Colors.white,
+        ),
+        label: const Text(
+          "เพิ่มทีม",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 14,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        backgroundColor: Colors.blue[400],
+        elevation: 6,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
+        ),
+        extendedPadding:
+            const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+        hoverElevation: 8,
       ),
-    );
-    _loadTeams();
-  },
-  icon: const Icon(
-    Icons.add,
-    size: 20, // ลดขนาดไอคอน
-    color: Colors.white,
-  ),
-  label: const Text(
-    "เพิ่มทีม",
-    style: TextStyle(
-      color: Colors.white,
-      fontSize: 14,
-      fontWeight: FontWeight.w500,
-    ),
-  ),
-  backgroundColor: Colors.blue[400], // สีฟ้าอ่อน
-  elevation: 6,
-  shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(14), // โค้งมน
-  ),
-  extendedPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-  hoverElevation: 8,
-),
-
     );
   }
 }
