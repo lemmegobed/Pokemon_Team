@@ -337,17 +337,16 @@ class _TeamPageState extends State<TeamPage> {
                               tooltip: 'ลบทีม',
                             ),
                             const SizedBox(width: 6),
-    // 🔵 ปุ่มดูรายละเอียดทีม
-    _smallRoundIconButton(
-      context: context,
-      icon: Icons.info_outline, // ใช้ไอคอน info
-      onTap: () {
-        Get.to(() => TeamDetailPage(team: _teams[index]));
-      },
-       bg: Theme.of(context).colorScheme.errorContainer,
-      fg: Theme.of(context).colorScheme.onErrorContainer,
-      tooltip: 'ดูรายละเอียด',
-    ),
+                            _smallRoundIconButton(
+                              context: context,
+                              icon: Icons.info_outline, 
+                              onTap: () {
+                                Get.to(() => TeamDetailPage(team: _teams[index]));
+                              },
+                              bg: Theme.of(context).colorScheme.errorContainer,
+                              fg: Theme.of(context).colorScheme.onErrorContainer,
+                              tooltip: 'ดูรายละเอียด',
+                            ),
                           ],
                         ),
                         const SizedBox(height: 5),
