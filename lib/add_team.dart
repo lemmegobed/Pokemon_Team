@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'team.dart';  
 
 class AddTeamPage extends StatefulWidget {
   final Function(List<Map<String, String>>, String) saveTeam;
@@ -150,18 +152,31 @@ class _AddTeamPageState extends State<AddTeamPage> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue,
-        elevation: 4,
-        title: const Text(
-          "สร้างทีม Pokémon",
-        style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-            color: Colors.white,
-          ),
-        ),
-        centerTitle: true,
-      ),
+  backgroundColor: Colors.blue,
+  elevation: 4,
+  title: const Text(
+    "สร้างทีม Pokémon",
+    style: TextStyle(
+      fontWeight: FontWeight.bold,
+      fontSize: 20,
+      color: Colors.white,
+    ),
+  ),
+  centerTitle: true,
+
+  // 👉 เพิ่มปุ่มด้านขวาสุด
+  actions: [
+    IconButton(
+      tooltip: 'ไปหน้าทีม',
+      icon: const Icon(Icons.groups, color: Colors.white),
+      onPressed: () {
+        // ใช้ GetX นำทางไปหน้า team.dart
+        Get.to(() => const TeamPage());
+      },
+    ),
+  ],
+),
+
 
       body: Padding(
         padding: const EdgeInsets.all(10),

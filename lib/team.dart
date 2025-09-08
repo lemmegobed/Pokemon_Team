@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'add_team.dart'; 
+import 'package:get/get.dart';
+import 'team_detail_page.dart'; 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -55,35 +57,35 @@ class _TeamPageState extends State<TeamPage> {
     final stored = _storage.read('teams');
     if (stored == null || (stored is List && stored.isEmpty)) {
       final defaultTeams = [
-        {
-          "name": "team A",
-          "members": [
-            {
-              "name": "Bulbasaur",
-              "image":"https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/001.png"
-            },
-            {
-              "name": "Charmander",
-              "image":"https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/004.png"},
-            {
-              "name": "Squirtle",
-              "image":"https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/007.png"},
-          ],
-        },
-        {
-          "name": "team B",
-          "members": [
-            {
-              "name": "Caterpie",
-              "image":"https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/010.png"},
-            {
-              "name": "Metapod",
-              "image":"https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/011.png"},
-            {
-              "name": "Butterfree",
-              "image":"https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/012.png"},
-          ],
-        },
+        // {
+        //   "name": "team A",
+        //   "members": [
+        //     {
+        //       "name": "Bulbasaur",
+        //       "image":"https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/001.png"
+        //     },
+        //     {
+        //       "name": "Charmander",
+        //       "image":"https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/004.png"},
+        //     {
+        //       "name": "Squirtle",
+        //       "image":"https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/007.png"},
+        //   ],
+        // },
+        // {
+        //   "name": "team B",
+        //   "members": [
+        //     {
+        //       "name": "Caterpie",
+        //       "image":"https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/010.png"},
+        //     {
+        //       "name": "Metapod",
+        //       "image":"https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/011.png"},
+        //     {
+        //       "name": "Butterfree",
+        //       "image":"https://raw.githubusercontent.com/HybridShivam/Pokemon/master/assets/images/012.png"},
+        //   ],
+        // },
       ];
       _storage.write('teams', defaultTeams);
     }
@@ -334,6 +336,18 @@ class _TeamPageState extends State<TeamPage> {
                               fg: Theme.of(context).colorScheme.onErrorContainer,
                               tooltip: 'ลบทีม',
                             ),
+                            const SizedBox(width: 6),
+    // 🔵 ปุ่มดูรายละเอียดทีม
+    _smallRoundIconButton(
+      context: context,
+      icon: Icons.info_outline, // ใช้ไอคอน info
+      onTap: () {
+        Get.to(() => TeamDetailPage(team: _teams[index]));
+      },
+       bg: Theme.of(context).colorScheme.errorContainer,
+      fg: Theme.of(context).colorScheme.onErrorContainer,
+      tooltip: 'ดูรายละเอียด',
+    ),
                           ],
                         ),
                         const SizedBox(height: 5),
