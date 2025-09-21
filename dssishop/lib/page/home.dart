@@ -58,7 +58,7 @@ class _HomePageState extends State<HomePage> {
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = json.decode(response.body);
         final List<dynamic> items = data['items'];
-        
+
         return items.map((item) => Product.fromJson(item)).toList();
       } else {
         throw Exception('Failed to load products: ${response.statusCode}');
@@ -71,7 +71,10 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(statusBarColor: Colors.transparent, statusBarIconBrightness: Brightness.light),
+      const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.light,
+      ),
     );
 
     return Scaffold(
@@ -86,7 +89,10 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ),
-        title: const Text('สินค้าทั้งหมด', style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white)),
+        title: const Text(
+          'DSSI Shop',
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
         centerTitle: false,
         elevation: 0,
         backgroundColor: Colors.transparent,
@@ -123,34 +129,78 @@ class _HomePageState extends State<HomePage> {
             return const Center(child: Text('ไม่พบสินค้า.'));
           } else {
             final products = snapshot.data!;
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  // กำหนดจำนวนคอลัมน์ตามความกว้างของหน้าจอ
-                  int crossAxisCount;
-                  if (constraints.maxWidth > 1200) {
-                    crossAxisCount = 6; // สำหรับหน้าจอใหญ่ (Desktop)
-                  } else if (constraints.maxWidth > 800) {
-                    crossAxisCount = 4; // สำหรับหน้าจอขนาดกลาง (Tablet)
-                  } else {
-                    crossAxisCount = 2; // สำหรับหน้าจอขนาดเล็ก (Mobile)
-                  }
+            final bestSellers =
+                products.where((p) => p.price > 100).take(10).toList();
 
-                  return GridView.builder(
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+            return LayoutBuilder(
+              builder: (context, constraints) {
+                int crossAxisCount;
+                if (constraints.maxWidth > 1200) {
+                  crossAxisCount = 6;
+                } else if (constraints.maxWidth > 800) {
+                  crossAxisCount = 4;
+                } else {
+                  crossAxisCount = 2;
+                }
+
+                return ListView(
+                  padding: const EdgeInsets.all(8.0),
+                  children: [
+                    // --- หัวข้อสินค้าขายดี ---
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8.0),
+                      child: Text(
+                        'สินค้าขายดี',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF512DA8),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 180,
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: bestSellers.map((product) {
+                            return Container(
+                              width: 140,
+                              margin: const EdgeInsets.only(right: 8.0),
+                              child: _buildBestSellerCard(product),
+                            );
+                          }).toList(),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    // --- หัวข้อสินค้าทั้งหมด ---
+                    const Padding(
+                      padding: EdgeInsets.symmetric(vertical: 8.0),
+                      child: Text(
+                        'สินค้าทั้งหมด',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Color(0xFF512DA8),
+                        ),
+                      ),
+                    ),
+                    // --- GridView ของสินค้าทั้งหมด ---
+                    GridView.count(
                       crossAxisCount: crossAxisCount,
                       crossAxisSpacing: 8.0,
                       mainAxisSpacing: 8.0,
                       childAspectRatio: 0.7,
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      children: products
+                          .map((p) => _buildProductCard(p))
+                          .toList(),
                     ),
-                    itemCount: products.length,
-                    itemBuilder: (context, index) {
-                      return _buildProductCard(products[index]);
-                    },
-                  );
-                },
-              ),
+                  ],
+                );
+              },
             );
           }
         },
@@ -176,10 +226,13 @@ class _HomePageState extends State<HomePage> {
                 width: double.infinity,
                 loadingBuilder: (context, child, progress) {
                   if (progress == null) return child;
-                  return const Center(child: CircularProgressIndicator(color: Color(0xFF673AB7)));
+                  return const Center(
+                    child: CircularProgressIndicator(color: Color(0xFF673AB7)),
+                  );
                 },
                 errorBuilder: (context, error, stackTrace) => const Center(
-                  child: Icon(Icons.image_not_supported_outlined, color: Colors.grey, size: 40),
+                  child: Icon(Icons.image_not_supported_outlined,
+                      color: Colors.grey, size: 40),
                 ),
               ),
             ),
@@ -202,6 +255,55 @@ class _HomePageState extends State<HomePage> {
                     color: Color(0xFF388E3C),
                     fontWeight: FontWeight.w800,
                     fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildBestSellerCard(Product product) {
+    return Card(
+      elevation: 3,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: ClipRRect(
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+              child: Image.network(
+                product.imageUrl,
+                fit: BoxFit.cover,
+                width: double.infinity,
+                errorBuilder: (context, error, stackTrace) => const Icon(
+                  Icons.image_not_supported_outlined,
+                  size: 40,
+                  color: Colors.grey,
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(6.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  product.name,
+                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                Text(
+                  '\$${product.price.toStringAsFixed(2)}',
+                  style: const TextStyle(
+                    color: Color(0xFF388E3C),
+                    fontWeight: FontWeight.w600,
+                    fontSize: 11,
                   ),
                 ),
               ],
